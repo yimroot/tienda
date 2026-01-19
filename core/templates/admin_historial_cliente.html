@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h5 class="text-muted mb-0">Historial de Pedidos de:</h5>
+            <h2 class="brand-font display-5 text-primary">{{ cliente.username }}</h2>
+            <small>{{ cliente.email }}</small>
+        </div>
+        <a href="{% url 'lista_clientes_admin' %}" class="btn btn-outline-dark rounded-pill">Volver a la Lista</a>
+    </div>
+
+    <div class="row">
+        {% for pedido in pedidos %}
+        <div class="col-md-12 mb-3">
+            <div class="card shadow-sm border-0 {% if pedido.estado == 'pendiente' %}border-start border-warning border-5{% else %}border-start border-success border-5{% endif %}">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-1">Pedido #{{ pedido.id }}</h5>
+                            <span class="text-muted small">{{ pedido.fecha|date:"d M Y - H:i" }}</span>
+                            <ul class="mb-0 list-unstyled mt-2">
+                                {% for item in pedido.detallepedido_set.all %}
+                                    <li class="small">• <strong>{{ item.cantidad }}x</strong> {{ item.producto.nombre }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <span class="fs-4 fw-bold text-success">${{ pedido.total }}</span>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if pedido.estado == 'pendiente' %}
+                                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">⏳ Pendiente en Caja</span>
+                                <small class="d-block text-muted mt-2 italic">Gestionar desde 'Caja en Vivo'</small>
+                            {% else %}
+                                <div class="mb-2">
+                                    <span class="badge bg-success px-3 py-2 rounded-pill">✅ Entregado / Finalizado</span>
+                                </div>
+                                
+                                {% if user.rol == 'admin' or user.is_superuser %}
+                                <div class="p-2 bg-light rounded border text-start d-inline-block">
+                                    <small class="text-muted d-block" style="font-size: 0.7rem; text-transform: uppercase;">Atendido por:</small>
+                                    <span class="text-primary fw-bold small">
+                                        {% if pedido.cajero_encargado %}
+                                            👤 {{ pedido.cajero_encargado.username }}
+                                        {% else %}
+                                            <span class="text-muted italic">Sistema</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="alert alert-light text-center">Este cliente no tiene pedidos registrados.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="text-primary mb-4">🖥️ Caja - Pedidos Pendientes</h2>
+    
+    <div class="row">
+        {% for pedido in pedidos %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow border-left-primary">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 font-weight-bold text-primary">Pedido #{{ pedido.id }}</h5>
+                    <span class="badge bg-warning text-dark">{{ pedido.get_estado_display }}</span>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted">Cliente: {{ pedido.usuario.username }}</h6>
+                    <hr>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for item in pedido.detallepedido_set.all %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ item.cantidad }}x {{ item.producto.nombre }}</span>
+                                <span>${{ item.subtotal }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="fw-bold">Total: ${{ pedido.total }}</h4>
+                        <a href="{% url 'despachar_pedido' pedido.id %}" class="btn btn-success btn-lg">
+                            💰 Cobrar y Entregar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <h3 class="text-muted">No hay pedidos pendientes 🎉</h3>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

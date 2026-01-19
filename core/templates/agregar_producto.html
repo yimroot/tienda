@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h4>➕ Añadir Inventario</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label>Selecciona Categoría:</label>
+                        {{ form.categoria }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>Nombre del Producto:</label>
+                        {{ form.nombre }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label>Precio ($):</label>
+                            {{ form.precio }}
+                        </div>
+                        <div class="col">
+                            <label>Stock Inicial:</label>
+                            {{ form.stock }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 mt-3">
+                        <label>Descripción:</label>
+                        {{ form.descripcion }}
+                    </div>
+                    
+                    <button class="btn btn-success w-100">Guardar Producto</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

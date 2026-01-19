@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="brand-font mb-4">👥 Lista de Clientes</h2>
+    
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td class="fw-bold">{{ cliente.username }}</td>
+                        <td>{{ cliente.first_name }} {{ cliente.last_name }}</td>
+                        <td class="text-muted">{{ cliente.email }}</td>
+                        <td class="text-end">
+                            <a href="{% url 'historial_detalle_cliente' cliente.id %}" class="btn btn-sm btn-dark">
+                                📜 Ver Historial
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">No hay clientes registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Volver al Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    
+    <div class="text-center mb-5">
+        <h1 class="brand-font display-4">📜 Mis Compras</h1>
+        <p class="text-muted">Revisa el historial de tus antojos y descarga tus comprobantes.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% if pedidos %}
+                {% for pedido in pedidos %}
+                <div class="card shadow-sm border-0 mb-4 rounded-3 overflow-hidden">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom">
+                        <div>
+                            <span class="text-muted small">Pedido #{{ pedido.id }}</span>
+                            <div class="fw-bold text-dark">{{ pedido.fecha|date:"d M Y - H:i" }}</div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            {% if pedido.estado == 'entregado' %}
+                                <a href="{% url 'descargar_factura' pedido.id %}" class="btn btn-sm btn-outline-primary border-2 fw-bold px-3 shadow-sm rounded-pill">
+                                    📥 Factura PDF
+                                </a>
+                                <span class="badge bg-success px-3 py-2 rounded-pill shadow-sm">✅ Entregado</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm">⏳ Por retirar en caja</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-body bg-light bg-opacity-10">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="fw-bold mb-3 text-secondary">Resumen de Productos:</h6>
+                                <ul class="list-unstyled mb-0">
+                                    {% for item in pedido.detallepedido_set.all %}
+                                    <li class="d-flex justify-content-between mb-2 border-bottom border-white pb-1">
+                                        <span>
+                                            <span class="badge bg-dark me-2">{{ item.cantidad }}</span> 
+                                            {{ item.producto.nombre }}
+                                        </span>
+                                        <span class="fw-bold text-muted">${{ item.subtotal }}</span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-md-4 text-end border-start border-white">
+                                <div class="text-muted small text-uppercase fw-bold">Total Pagado:</div>
+                                <div class="display-6 fw-bold text-success">${{ pedido.total }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <span style="font-size: 5rem;">🛒</span>
+                    </div>
+                    <h3 class="text-muted fw-bold">¿Aún no has probado nada?</h3>
+                    <p class="text-muted">Tu historial de compras aparecerá aquí una vez que realices tu primer pedido.</p>
+                    <a href="{% url 'catalogo' %}" class="btn btn-warning btn-lg mt-3 fw-bold px-5 rounded-pill shadow">
+                        Explorar Catálogo
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .brand-font { font-family: 'Righteous', cursive; }
+    .card { 
+        transition: all 0.3s ease; 
+        border: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    .card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.1) !important;
+    }
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+</style>
+{% endblock %}

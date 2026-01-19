@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5 p-4 bg-white shadow-sm rounded-3 border-start border-4 border-info">
+        <div>
+            <h1 class="brand-font h2 mb-1">🏭 Gestión de Inventario</h1>
+            <p class="text-muted mb-0">Control de stock para <strong>Bebidas, Snacks y Dulces</strong></p>
+        </div>
+        <div>
+            {% if user.rol == 'admin' %}
+                <a href="{% url 'home' %}" class="btn btn-outline-dark fw-bold px-4">Volver al Panel Admin</a>
+            {% else %}
+                <form action="{% url 'logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button class="btn btn-danger fw-bold px-4">Cerrar Sesión</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow border-0 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-dark text-white text-uppercase small">
+                        <tr>
+                            <th class="py-3 ps-4">Producto</th>
+                            <th class="py-3">Categoría</th>
+                            <th class="py-3 text-center">Estado de Stock</th>
+                            <th class="py-3">Actualizar Cantidad</th>
+                            <th class="py-3 text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos %}
+                        <tr class="{% if p.stock == 0 %}table-danger{% elif p.stock < 5 %}table-warning{% endif %}">
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark fs-5">{{ p.nombre }}</div>
+                                <small class="text-muted">ID: #{{ p.id }}</small>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill bg-secondary px-3 py-2">
+                                    {{ p.categoria.nombre }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% if p.stock == 0 %}
+                                    <span class="badge bg-danger p-2 px-3">🚫 AGOTADO</span>
+                                {% elif p.stock < 5 %}
+                                    <span class="badge bg-warning text-dark p-2 px-3">⚠️ BAJO: {{ p.stock }}</span>
+                                {% else %}
+                                    <span class="badge bg-success p-2 px-3">✅ OK: {{ p.stock }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{% url 'actualizar_stock' p.id %}" method="post" class="d-flex align-items-center gap-2">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm" style="max-width: 140px;">
+                                        <input type="number" name="nuevo_stock" value="{{ p.stock }}" min="0" 
+                                               class="form-control fw-bold border-primary shadow-sm">
+                                        <button class="btn btn-primary shadow-sm" title="Guardar cambios">
+                                            💾
+                                        </button>
+                                    </div>
+                                </form>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'eliminar_producto' p.id %}" 
+                                   class="btn btn-sm btn-outline-danger px-3 rounded-pill fw-bold"
+                                   onclick="return confirm('¿Estás seguro de que quieres eliminar {{ p.nombre }}? Esta acción no se puede deshacer.')">
+                                   🗑️ Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="py-4">
+                                    <span class="display-1 text-muted opacity-25">📦</span>
+                                    <p class="mt-3 text-muted">No hay productos registrados en la base de datos.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos extra para pulir el diseño */
+    .table thead th { border: none; }
+    .table tbody tr { transition: all 0.2s ease; }
+    .table tbody tr:hover { background-color: rgba(0,0,0,0.02) !important; }
+    .brand-font { font-family: 'Righteous', cursive; }
+    .btn-outline-danger:hover { background-color: #dc3545; color: white; }
+</style>
+{% endblock %}

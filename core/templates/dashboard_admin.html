@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 brand-font mb-2">Panel de Administración</h1>
+        <p class="text-muted">Bienvenido, Admin <strong>{{ user.username }}</strong>. Tienes el control total.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card">
+                <div class="fs-1 mb-3">👥</div>
+                <h4 class="fw-bold">Staff</h4>
+                <p class="text-muted small">Crea cuentas para Cajeros y Bodegueros.</p>
+                <a href="{% url 'crear_staff' %}" class="btn btn-outline-dark w-100 mt-auto">Gestionar</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card">
+                <div class="fs-1 mb-3">📦</div>
+                <h4 class="fw-bold">Inventario</h4>
+                <p class="text-muted small">Añade productos nuevos al sistema.</p>
+                <a href="{% url 'agregar_producto' %}" class="btn btn-outline-success w-100 mt-auto">Añadir</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card bg-light border-warning">
+                <div class="fs-1 mb-3">🛎️</div>
+                <h4 class="fw-bold">Caja en Vivo</h4>
+                <p class="text-muted small">Mira lo que llega al cajero y <strong>acepta pedidos</strong>.</p>
+                <a href="{% url 'panel_cajero' %}" class="btn btn-warning w-100 mt-auto fw-bold">Ir a Caja</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card bg-dark text-white">
+                <div class="fs-1 mb-3">🌍</div>
+                <h4 class="fw-bold text-white">Historial Total</h4>
+                <p class="text-white-50 small">Revisa los pedidos de <strong>todos los clientes</strong>.</p>
+                <a href="{% url 'historial_global' %}" class="btn btn-light w-100 mt-auto fw-bold">Ver Todo</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card bg-primary text-white">
+                <div class="fs-1 mb-3">📂</div>
+                <h4 class="fw-bold text-white">Por Clientes</h4>
+                <p class="text-white-50 small">Busca un cliente y mira su historial específico.</p>
+                <a href="{% url 'lista_clientes_admin' %}" class="btn btn-light w-100 mt-auto fw-bold">Ver Clientes</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm h-100 border-0 hover-card bg-info bg-opacity-10 border-info">
+                <div class="fs-1 mb-3">🏭</div>
+                <h4 class="fw-bold">Bodega</h4>
+                <p class="text-muted small">Ver faltantes, reponer stock y <strong>borrar productos</strong>.</p>
+                <a href="{% url 'panel_bodeguero' %}" class="btn btn-info w-100 mt-auto fw-bold text-white">Ir a Bodega</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card { transition: transform 0.2s; }
+    .hover-card:hover { transform: translateY(-5px); }
+</style>
+{% endblock %}

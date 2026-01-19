@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="brand-font mb-0 me-3">🛒 Tu Carrito</h2>
+        <span class="badge bg-dark rounded-pill">BitBites Store</span>
+    </div>
+
+    {% if pedido and pedido.detallepedido_set.all %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover bg-white mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Producto</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-center">Precio Unit.</th>
+                            <th class="text-center">Subtotal</th>
+                            <th class="text-end pe-4">Acciones</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in pedido.detallepedido_set.all %}
+                        <tr>
+                            <td class="ps-4 align-middle">
+                                <span class="fw-bold text-dark">{{ item.producto.nombre }}</span>
+                            </td>
+                            <td class="text-center align-middle">
+                                <span class="badge bg-secondary px-3 py-2 rounded-pill">{{ item.cantidad }}</span>
+                            </td>
+                            <td class="text-center align-middle">${{ item.precio_unitario }}</td>
+                            <td class="text-center align-middle fw-bold text-primary">${{ item.subtotal }}</td>
+                            <td class="text-end pe-4 align-middle">
+                                <a href="{% url 'eliminar_del_carrito' item.id %}" 
+                                   class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold shadow-sm">
+                                   ➖ Quitar uno
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-light">
+                        <tr class="fs-4">
+                            <td colspan="3" class="text-end fw-bold align-middle py-3">TOTAL A PAGAR:</td>
+                            <td class="text-center fw-bold text-success align-middle py-3">${{ pedido.total }}</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <a href="{% url 'catalogo' %}" class="btn btn-outline-dark fw-bold px-4 rounded-pill">
+                ⬅ Seguir comprando
+            </a>
+            <a href="{% url 'confirmar_pedido' %}" class="btn btn-success btn-lg fw-bold px-5 shadow-sm rounded-pill">
+                ✅ Confirmar Pedido
+            </a>
+        </div>
+    {% else %}
+        <div class="text-center py-5 bg-white rounded shadow-sm border">
+            <span style="font-size: 5rem;">🛒</span>
+            <h3 class="text-muted mt-3 fw-bold">Tu carrito está vacío</h3>
+            <p class="text-muted mb-4">¡No te quedes con el antojo! Revisa nuestro catálogo.</p>
+            <a href="{% url 'catalogo' %}" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill">Ir al Catálogo</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .brand-font { font-family: 'Righteous', cursive; }
+    .table thead th { border-top: none; padding: 15px 10px; font-weight: 700; color: #555; }
+    .btn-outline-danger:hover { background-color: #dc3545; color: white; transform: scale(1.05); }
+    .btn-outline-danger { transition: all 0.2s ease; }
+    .card { overflow: hidden; }
+</style>
+{% endblock %}
